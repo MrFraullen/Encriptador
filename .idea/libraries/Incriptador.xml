@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Incriptador">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Incriptador.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
