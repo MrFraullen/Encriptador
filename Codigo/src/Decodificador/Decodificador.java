@@ -3,18 +3,16 @@ package Decodificador;
 import java.util.Scanner;
 
 public class Decodificador {
+
+    public static class DecodificadorException extends Exception{
+        public DecodificadorException(String mensaje){
+            super(mensaje);
+        }
+    }
+
     public static void escribirl(Object texto){System.out.println(texto);}
 
     public static void escribir(Object texto){System.out.print(texto);}
-
-    public static void errorCantidad(){
-        escribirl("Error: la cantidad de digitos de la secuencia/subsecuencia no corresponde a la cantidad de digitos que deberia tener una secuencia.");
-        System.exit(1);
-    }
-    public static void errorCaracter(){
-        escribirl("Error: la secuencia ingresada no es numerica o genero un caracter ascii invalido.");
-        System.exit(1);
-    }
 
     private static final int LONGITUD_ELEMENTO=13;
 
@@ -62,46 +60,51 @@ public class Decodificador {
     }
 
     public static void decodificar(){
-        //Entrada
-        String secuencia;
-        Scanner scanner=new Scanner(System.in);
-        escribir("Ingrese una secuencia a decodificar:");
-        secuencia=scanner.nextLine().trim();
-        while(secuencia.isEmpty()){
-            escribirl("No se ingreso una secuencia a decodificar.");
-            escribir("Ingrese la secuencia a decodificar");
+        try {
+            //Entrada
+            String secuencia;
+            Scanner scanner=new Scanner(System.in);
+            escribir("Ingrese una secuencia a decodificar:");
             secuencia=scanner.nextLine().trim();
+            while(secuencia.isEmpty()){
+                escribirl("No se ingreso una secuencia a decodificar.");
+                escribir("Ingrese la secuencia a decodificar");
+                secuencia=scanner.nextLine().trim();
+            }
+
+            //Verifica que sea correcta
+            final int CANTIDAD=secuencia.length();
+            for(int i=0;i<CANTIDAD;i++)if(!(Character.isDigit(secuencia.charAt(i))))throw new DecodificadorException("Error: la secuencia ingresada no es numerica o genero un caracter ascii invalido."); //Si contiene algo no numerico.
+            if(CANTIDAD%LONGITUD_ELEMENTO!=0)throw new DecodificadorException("Error: la cantidad de digitos de la secuencia/subsecuencia no corresponde a la cantidad de digitos que deberia tener una secuencia."); //Si no es 13 x n de longitud
+
+            //Prepara el texto final
+            StringBuilder textoFinal=new StringBuilder();
+            while(textoFinal.length()!=CANTIDAD/LONGITUD_ELEMENTO)textoFinal.append("a"); //lo rellena de a's
+
+            for(int i=0;i<CANTIDAD;i+=LONGITUD_ELEMENTO){
+                String elementoActual=secuencia.substring(i,i+LONGITUD_ELEMENTO);
+
+                //Halla los valores
+                int orden=Integer.parseInt(elementoActual.substring(0,3));
+                int[] elementoDesconstruido=desconstruirElemento(elementoActual,orden);
+                int claveElem=elementoDesconstruido[0];
+                int pos=elementoDesconstruido[1];
+                int valorInt=elementoDesconstruido[2];
+
+
+                //Decodifica
+                String claveStr=String.valueOf(claveElem);
+                int divisor=Character.getNumericValue(claveStr.charAt(0));
+                int resta=Character.getNumericValue(claveStr.charAt(1));
+                char valorASCII= (char) ((valorInt-resta)/divisor);
+
+                textoFinal.setCharAt(pos, valorASCII); //Coloca el caracter correspondiente en su posiciÃ³n
+            }
+            escribirl("El texto decodificado es:");
+            escribirl(textoFinal);
+        } catch (DecodificadorException e) {
+            escribirl(e.getMessage());
+            return;
         }
-
-        //Verifica que sea correcta
-        final int CANTIDAD=secuencia.length();
-        if(CANTIDAD%LONGITUD_ELEMENTO!=0)errorCantidad(); //Si no es 13 x n de longitud
-        for(int i=0;i<CANTIDAD;i++)if(!(Character.isDigit(secuencia.charAt(i))))errorCaracter(); //Si contiene algo no numerico.
-
-        //Prepara el texto final
-        StringBuilder textoFinal=new StringBuilder();
-        while(textoFinal.length()!=CANTIDAD/LONGITUD_ELEMENTO)textoFinal.append("a"); //lo rellena de a's
-
-        for(int i=0;i<CANTIDAD;i+=LONGITUD_ELEMENTO){
-            String elementoActual=secuencia.substring(i,i+LONGITUD_ELEMENTO);
-
-            //Halla los valores
-            int orden=Integer.parseInt(elementoActual.substring(0,3));
-            int[] elementoDesconstruido=desconstruirElemento(elementoActual,orden);
-            int claveElem=elementoDesconstruido[0];
-            int pos=elementoDesconstruido[1];
-            int valorInt=elementoDesconstruido[2];
-
-
-            //Decodifica
-            String claveStr=String.valueOf(claveElem);
-            int divisor=Character.getNumericValue(claveStr.charAt(0));
-            int resta=Character.getNumericValue(claveStr.charAt(1));
-            char valorASCII= (char) ((valorInt-resta)/divisor);
-
-            textoFinal.setCharAt(pos, valorASCII); //Coloca el caracter correspondiente en su posiciÃ³n
-        }
-        escribirl("El texto decodificado es:");
-        escribirl(textoFinal);
     }
 }
