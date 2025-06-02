@@ -16,7 +16,9 @@ incriptar información privada de forma profesional.
    - Verficia que los subelementos de cada elemento sean validos.
    - Decodifica cada elemento de la secuencia y devuelve el texto decodificado.
 
-3. Incluye el .exe para ejecutar sin la necesidad de tener Java instalado.
+3. Incluye el Incriptador.exe
+   - No necesita de tener Java instalado.
+   - Copia automaticamente el texto codificada.
 
 ---
 ## 🔍 ¿Cómo funciona el cifrado y descifrado?
