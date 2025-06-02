@@ -15,7 +15,7 @@ public class Incriptador {
         int res = 0;
         Scanner scanner = new Scanner(System.in);
         do {
-            escribirl("Menu:\n1. Codificar texto.\n2. Decodificar texto.\n3. Salir");
+            escribirl("Menú:\n1. Codificar texto.\n2. Decodificar texto.\n3. Salir");
             escribir("Elige una opción (1,2,3): ");
             try {
                 res = scanner.nextInt();

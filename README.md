@@ -1,67 +1,72 @@
-# Incriptador 🔐
+# Encriptador 🔐
 
-Incriptador es una aplicación en Java que permite codificar y decodificar textos usando un sistema personalizado de cifrado. Es un proyecto academico por lo que no debe ser usar para
-incriptar información privada de forma profesional.
+**Encriptador** es una aplicación en Java que permite codificar y decodificar textos mediante un sistema personalizado de cifrado.  
+⚠️ Este proyecto tiene fines estrictamente académicos, por lo tanto, **no debe utilizarse para proteger información sensible o confidencial en contextos profesionales o reales.**
 
 ---
 
 ## 🚀 Características
 
-1. Codifica mensajes en un formato "seguro".
-    - Codifica cada caracter como un elemento de 13 numeros.
-    - Cada elemento contiene una clave y orden seudoaleatorios, además de su orden y valor ASCII codificado.
-    - En la secuencia final organiza los diferentes elementos de forma seudoaleatoria.
-2. Decodifica mensajes previamente codificados mediante el metodo personalizado.
-   - Verifica que la secuencia a decodificar sea valida.
-   - Verficia que los subelementos de cada elemento sean validos.
-   - Decodifica cada elemento de la secuencia y devuelve el texto decodificado.
+1. Codifica mensajes en un formato "seguro":
+   - Convierte cada carácter en un elemento de 13 dígitos.
+   - Cada elemento contiene una clave y un orden seudoaleatorios, además de su posición y valor ASCII codificado.
+   - La secuencia final organiza todos los elementos de forma seudoaleatoria.
 
 3. Incluye el Incriptador.exe
-   - No necesita de tener Java instalado.
    - Copia automaticamente el texto codificada.
 
 ---
+
+## 📝 Notas
+
+- Solo admite caracteres con códigos ASCII del **32 al 126** (alfabeto inglés, símbolos y caracteres comunes).
+
+---
+
 ## 🔍 ¿Cómo funciona el cifrado y descifrado?
 
 ### 1. Codificación de cada carácter del texto:
 
 - Se genera una **clave de dos dígitos** entre 22 y 99.
-- Se obtiene la **posición del carácter**, representada como un número de 4 dígitos (0000 a 9999).
+- Se obtiene la **posición del carácter** en el texto, representada como un número de 4 dígitos (0000 a 9999).
 - Se extrae el **valor ASCII** del carácter.
-- Se elige un **orden aleatorio** entre las permutaciones posibles de los valores clave (1), posición (2) y valor ASCII (3).  
-  - Por ejemplo, si el orden es "231", primero se ubicará la posición, luego el valor ASCII y finalmente la clave.
-- El valor ASCII se transforma:  
-  - Se **multiplica por el primer dígito de la clave**.  
+- Se selecciona un **orden aleatorio** entre las permutaciones posibles de los tres valores: clave (1), posición (2) y valor codificado (3).
+  - Ejemplo: si el orden es `"231"`, primero se coloca la posición, luego el valor codificado y finalmente la clave.
+- El valor ASCII se transforma de la siguiente forma:
+  - Se **multiplica por el primer dígito de la clave**.
   - Luego se **suma el segundo dígito** de la clave.
 - El elemento final de 13 dígitos se compone así:
-  - Los primeros **3 dígitos representan el orden** generado.
-  - Luego, según ese orden, se colocan la clave (2 dígitos), la posición (4 dígitos) y el valor codificado (4 dígitos).
-- El proceso se repite para todos los caracteres del texto original.
+  - Los primeros **3 dígitos** representan el orden utilizado.
+  - Luego, según ese orden, se concatenan:
+    - La **clave** (2 dígitos)
+    - La **posición** (4 dígitos)
+    - El **valor codificado** (4 dígitos)
+- Este proceso se repite para cada carácter del texto original.
 
 ### 2. Decodificación de cada elemento en la secuencia:
 
 - Se valida que:
-  1. La secuencia tenga una longitud divisible por 13.
-  2. La secuencia contenga **solo caracteres numéricos**.
-- Cada elemento se separa en:
+  - La longitud de la secuencia sea divisible por 13.
+  - La secuencia contenga **solo caracteres numéricos**.
+- Cada bloque de 13 dígitos se separa en:
   - **Orden de codificación**
   - **Clave**
   - **Posición**
   - **Valor codificado**
-- El valor codificado se decodifica así:
-  - Se **resta el segundo dígito de la clave**.
-  - Se **divide entre el primer dígito** de la clave (el resultado siempre será entero).
-  - Se obtiene el **valor ASCII original**.
-- El carácter correspondiente al ASCII se inserta en su posición.
-- Se repite el proceso con todos los elementos.
+- Para recuperar el carácter original:
+  - Se **resta el segundo dígito de la clave** al valor codificado.
+  - Luego se **divide el resultado entre el primer dígito** de la clave (el resultado será un número entero correspondiente al valor ASCII original).
+  - Se convierte este número en su carácter correspondiente.
+  - El carácter se inserta en la posición correcta dentro del mensaje reconstruido.
+- El proceso se repite con todos los bloques de la secuencia cifrada.
 
 ---
 
-## 🧱 Estructura del proyecto desde el src
+## 🧱 Estructura del proyecto (desde la carpeta `src`)
 
 ```plaintext
 src/
-│   Incriptador.java
+│   Encriptador.java
 │
 ├───Codificador
 │       Codificador.java
@@ -69,19 +74,18 @@ src/
 └───Decodificador
         Decodificador.java
 ```
+
 ---
 
 ## 🧑‍💻 Autor
+> Jonathan (MrFraullen) – github.com/MrFraullen
 
-**Jonathan** *(MrFraullen)* – <a href="https://github.com/MrFraullen">github.com/MrFraullen</a>
-
----
+--
 
 ## 📄 Licencia
 Este proyecto está licenciado bajo los términos de la Licencia MIT Académica No Comercial.
 Puedes usar, modificar y compartir este software únicamente con fines académicos o personales no comerciales.
 
-> El uso comercial, redistribución o venta está prohibido sin autorización escrita del autor.
+> El uso comercial, la redistribución o la venta están prohibidos sin autorización escrita del autor.
 
 Consulta el archivo LICENSE para ver los términos completos en español e inglés.
-

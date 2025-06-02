@@ -97,6 +97,7 @@ public class Decodificador {
                 int divisor=Character.getNumericValue(claveStr.charAt(0));
                 int resta=Character.getNumericValue(claveStr.charAt(1));
                 char valorASCII= (char) ((valorInt-resta)/divisor);
+                if( valorASCII<32 || valorASCII>126) throw new DecodificadorException("Error: Caracter ASCII no imprimible.");
 
                 textoFinal.setCharAt(pos, valorASCII); //Coloca el caracter correspondiente en su posiciÃ³n
             }
@@ -104,7 +105,6 @@ public class Decodificador {
             escribirl(textoFinal);
         } catch (DecodificadorException e) {
             escribirl(e.getMessage());
-            return;
         }
     }
 }

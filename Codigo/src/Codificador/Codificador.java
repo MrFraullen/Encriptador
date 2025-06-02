@@ -11,6 +11,12 @@ import java.awt.datatransfer.Clipboard;
 
 public class Codificador{
 
+    public static class CodificadorException extends Exception{
+        public CodificadorException(String mensaje){
+            super(mensaje);
+        }
+    }
+
     private static final int ORDEN_CPV = 123; //Clave(1) Posicion(2) Valor(3).
     private static final int ORDEN_CVP = 132; //Clave(1) Valor(3) Posicion(2).
     private static final int ORDEN_PCV = 213; //Posicion(2) Clave(1) Valor(3).
@@ -42,12 +48,12 @@ public class Codificador{
     private static String agregarCerosIzquierda(String texto, int cantidadTotal){
         StringBuilder textoFinal = new StringBuilder();
         int cantidadCeros = cantidadTotal - texto.length();
-        for (int i=0;i<cantidadCeros;i++) textoFinal.append('0');
+        textoFinal.append("0".repeat(Math.max(0, cantidadCeros))); //agrega el 0 repetido la cantidad de 0's necesaria
         textoFinal.append(texto);
         return textoFinal.toString();
     }
 
-    // Nuevo método para copiar texto al portapapeles
+    // Copiar al portapapeles
     private static void copiarAlPortapapeles(String texto){
         StringSelection seleccion = new StringSelection(texto);
         Clipboard portapapeles = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -55,45 +61,50 @@ public class Codificador{
     }
 
     public static void codificar(){
-        Random rand = new Random();
-        String texto;
+        try {
+            Random rand = new Random();
+            String texto;
 
-        Scanner scanner = new Scanner(System.in);
-        escribir("Ingrese el texto a codificar: ");
-        texto = scanner.nextLine().trim();
-        while(texto.isEmpty()){
-            escribirl("No se ingreso un texto a codificar");
-            escribir("Ingrese el texto a codificar: ");
+            Scanner scanner = new Scanner(System.in);
+            escribir("Ingrese el texto a codificar (Sin caracteres fuera del ASCII imprimible): ");
             texto = scanner.nextLine().trim();
+            while(texto.isEmpty()){
+                escribirl("No se ingreso un texto a codificar");
+                escribir("Ingrese el texto a codificar: ");
+                texto = scanner.nextLine().trim();
+            }
+
+            StringBuilder secuencia = new StringBuilder();
+            StringBuilder[] valores = new StringBuilder[texto.length()];
+
+            for(int i=0; i < texto.length(); i++){
+                String clave = String.valueOf(rand.nextInt(22, 100));
+                int valorASCII = texto.charAt(i);
+                if (valorASCII<32 || valorASCII>126) throw new CodificadorException("Error: Caracter ASCII no imprimible"+valorASCII);
+                int multiplicador = Character.getNumericValue(clave.charAt(0));
+                int suma = Character.getNumericValue(clave.charAt(1));
+
+                int valorCodificado = (valorASCII * multiplicador) + suma;
+                String valorFinal = agregarCerosIzquierda(String.valueOf(valorCodificado), DIGITOS_VALOR);
+                String posicionStr = agregarCerosIzquierda(String.valueOf(i), DIGITOS_POSICION);
+                int orden = ORDENES[rand.nextInt(ORDENES.length)];
+
+                valores[i] = construirElemento(orden, clave, valorFinal, posicionStr);
+            }
+
+            List<StringBuilder> lista = Arrays.asList(valores);
+            Collections.shuffle(lista);
+
+            for(StringBuilder elemento : lista) secuencia.append(elemento);
+
+            escribirl("Texto codificado:");
+            escribirl(secuencia.toString());
+
+            // Copia la secuencia al portapapeles
+            copiarAlPortapapeles(secuencia.toString());
+            escribirl("La secuencia codificada se ha copiado automáticamente al portapapeles.");
+        } catch (CodificadorException e) {
+            escribirl(e.getMessage());
         }
-
-        StringBuilder secuencia = new StringBuilder();
-        StringBuilder[] valores = new StringBuilder[texto.length()];
-
-        for(int i=0; i < texto.length(); i++){
-            String clave = String.valueOf(rand.nextInt(22, 100));
-            int valorASCII = texto.charAt(i);
-            int multiplicador = Character.getNumericValue(clave.charAt(0));
-            int suma = Character.getNumericValue(clave.charAt(1));
-
-            int valorCodificado = (valorASCII * multiplicador) + suma;
-            String valorFinal = agregarCerosIzquierda(String.valueOf(valorCodificado), DIGITOS_VALOR);
-            String posicionStr = agregarCerosIzquierda(String.valueOf(i), DIGITOS_POSICION);
-            int orden = ORDENES[rand.nextInt(ORDENES.length)];
-
-            valores[i] = construirElemento(orden, clave, valorFinal, posicionStr);
-        }
-
-        List<StringBuilder> lista = Arrays.asList(valores);
-        Collections.shuffle(lista);
-
-        for(StringBuilder elemento : lista) secuencia.append(elemento);
-
-        escribirl("Texto codificado:");
-        escribirl(secuencia.toString());
-
-        // Copia la secuencia al portapapeles
-        copiarAlPortapapeles(secuencia.toString());
-        escribirl("La secuencia codificada se ha copiado automáticamente al portapapeles.");
     }
 }
