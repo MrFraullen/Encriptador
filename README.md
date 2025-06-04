@@ -12,7 +12,8 @@
    - Cada elemento contiene una clave y un orden seudoaleatorios, además de su posición y valor ASCII codificado.
    - La secuencia final organiza todos los elementos de forma seudoaleatoria.
 
-3. Incluye el Incriptador.exe
+3. Incluye el Encriptador.exe
+   - Carpeta Encriptador con el .exe y runtime portables.
    - Copia automaticamente el texto codificada.
 
 ---

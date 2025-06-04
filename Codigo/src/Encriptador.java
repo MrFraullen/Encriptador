@@ -3,7 +3,7 @@ import Decodificador.Decodificador;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
-public class Incriptador {
+public class Encriptador {
     private static final int CODIFICAR = 1;
     private static final int DECODIFICAR = 2;
     private static final int SALIR = 3;

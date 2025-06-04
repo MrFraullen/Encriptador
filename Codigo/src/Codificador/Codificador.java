@@ -80,7 +80,7 @@ public class Codificador{
             for(int i=0; i < texto.length(); i++){
                 String clave = String.valueOf(rand.nextInt(22, 100));
                 int valorASCII = texto.charAt(i);
-                if (valorASCII<32 || valorASCII>126) throw new CodificadorException("Error: Caracter ASCII no imprimible"+valorASCII);
+                if (valorASCII<32 || valorASCII>126) throw new CodificadorException("Error: Caracter ASCII no imprimible.  ");
                 int multiplicador = Character.getNumericValue(clave.charAt(0));
                 int suma = Character.getNumericValue(clave.charAt(1));
 
